@@ -1,9 +1,15 @@
 const express = require("express");
-require("dotenv");
+const dbConnection = require("./configs/db")
+require("dotenv").config();
 
 const app = express();
+app.use(express.json())
+
+const PORT = process.env.DEFAULT_PORT || 8080;
 
 
-app.listen(8080, () => {
-    console.log("server is running")
+dbConnection().then(() => {
+    app.listen(PORT, () => {
+        console.log("server is running")
+    })
 })
