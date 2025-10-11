@@ -9,6 +9,7 @@ const propertiesSchema = new Schema({
     propertyType: { type: String, required: true, enum: ['hotel', 'villa', 'resort']}
 }, {
     timestamps: true,
+    versionKey: false,
 })
 
 const PropertiesModel = model('properties', propertiesSchema);
