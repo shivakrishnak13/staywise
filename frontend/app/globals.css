@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  
+  --color-primary: #2563eb;
+  --color-secondary: #f59e0b;
+  --color-background: #f9fafb;
+  --color-textPrimary: #111827;
+  --color-textSecondary: #6b7280;
+  --color-cardBg: #ffffff;
+  --color-error: #dc2626;
+
+}
+
 html, body, #root {
   height: 100%;
 }

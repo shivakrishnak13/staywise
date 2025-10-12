@@ -16,8 +16,8 @@ async function request(path: string, opts: RequestInit = {}) {
 }
 
 export const authApi = {
-  signup: (body: { name: string; email: string; password: string }) => request('/signup', { method: 'POST', body: JSON.stringify(body) }),
-  login: (body: { email: string; password: string }) => request('/login', { method: 'POST', body: JSON.stringify(body) })
+  signup: (body: { name: string; email: string; password: string }) => request('/user/signup', { method: 'POST', body: JSON.stringify(body) }),
+  login: (body: { email: string; password: string }) => request('/user/auth', { method: 'POST', body: JSON.stringify(body) })
 };
 
 export const propertiesApi = {
