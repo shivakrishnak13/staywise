@@ -14,17 +14,36 @@ export default function Navbar() {
   const menuRef = useRef<HTMLDivElement>(null);
   const [role, setRole] = useState<string>('user');
 
-  useEffect(() => {
+  const loadUserData = () => {
     const authStatus = localStorage.getItem('isAuth');
     const userData = localStorage.getItem(USER_KEY);
     const userRole = userData ? JSON.parse(userData).role : 'user';
+    
     if (authStatus === 'true' && userData) {
       setIsAuth(true);
       setUser(JSON.parse(userData));
+    } else {
+      setIsAuth(false);
+      setUser(null);
     }
+    
     if (userRole) {
       setRole(userRole);
     }
+  };
+
+  useEffect(() => {
+    loadUserData();
+
+    const handleAuthChange = () => {
+      loadUserData();
+    };
+
+    window.addEventListener('authChange', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('authChange', handleAuthChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -54,6 +73,7 @@ export default function Navbar() {
     setIsAuth(false);
     setUser(null);
     setShowMenu(false);
+    window.dispatchEvent(new Event('authChange'));
     router.push(ROUTES.LOGIN);
   };
 
@@ -101,17 +121,16 @@ export default function Navbar() {
                 My Bookings
               </a>
             )}
-            {
-                isAuth && role === 'admin' && (
-                    <a 
+            {isAuth && role === 'admin' && (
+              <a 
                 href={ROUTES.ADMIN} 
                 className={`text-sm font-medium transition-colors ${
                   isActive(ROUTES.ADMIN) ? 'text-primary' : 'text-textSecondary hover:text-primary'
                 }`}
               >
                 Admin
-              </a>)
-            }
+              </a>
+            )}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -159,6 +178,15 @@ export default function Navbar() {
                       >
                         My Bookings
                       </a>
+                      {role === 'admin' && (
+                        <a
+                          href={ROUTES.ADMIN}
+                          className="block px-4 py-2 text-sm text-textPrimary hover:bg-background transition-colors"
+                          onClick={() => setShowMenu(false)}
+                        >
+                          Admin Dashboard
+                        </a>
+                      )}
                     </div>
 
                     <div className="border-t border-gray-200 pt-2">

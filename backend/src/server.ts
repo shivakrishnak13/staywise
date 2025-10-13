@@ -28,4 +28,17 @@ app.use('/api/bookings', authenticate, bookingsRouter);
 
 const PORT = process.env.DEFAULT_PORT || 8080;
 
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.DEFAULT_PORT || 8080;
+    
+    
+    connectDB().then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running locally on http://localhost:${PORT}`);
+        })
+    }).catch(err => {
+        console.error("Failed to connect to DB and start local server:", err);
+    });
+}
+
 export default app;
