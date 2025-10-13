@@ -5,11 +5,19 @@ import PropertiesModel from "../models/PropertiesModel";
 const getBookings = async (req: Request, res: Response) => {
     const { userId } = (req as any).user;
     try {
-        const allBookings = await BookingsModel.find({ userId })
-        res.status(200).json({ bookings: allBookings })
-        
+        const allBookings = await BookingsModel.find({ userId });
+        const bookingsWithPropertyDetails = await Promise.all(
+            allBookings.map(async (booking: any) => {
+                const property = await PropertiesModel.findOne({ _id: booking.propertyId });
+                return {
+                    ...booking.toObject(),
+                    propertyDetails: property ? property.toObject() : null
+                };
+            })
+        );
+        res.status(200).json({ bookings: bookingsWithPropertyDetails });
     } catch (error: any) {
-        res.status(500).json({ message: "Internal Server Error", error: error.message})
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
 

@@ -1,8 +1,9 @@
-export type Property = {
-  id: string;
+export interface Property {
+  _id: string;
   title: string;
+  description: string;
   location: string;
-  pricePerNight: number;
+  price: number;
   images: string[];
-  description?: string;
-};
+  propertyType: 'villa' | 'resort' | 'hotel';
+}
