@@ -17,6 +17,10 @@ app.use(cors({
 
 app.use(express.json())
 
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to StayWise Backend"})
+})
+
 app.use('/api/user', authRouter)
 app.use('/api/properties', authenticate, propertiesRouter)
 app.use('/api/bookings', authenticate, bookingsRouter);
