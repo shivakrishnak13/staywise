@@ -1,5 +1,9 @@
+// postcss.config.mjs
 const config = {
-  plugins: ["@tailwindcss/postcss"],
+  plugins: {
+    // This is the new plugin for v4
+    "@tailwindcss/postcss": {}, 
+  },
 };
 
 export default config;
