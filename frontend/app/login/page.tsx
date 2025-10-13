@@ -62,6 +62,7 @@ export default function LoginPage() {
         localStorage.setItem(USER_KEY, JSON.stringify(userDetails.user))
       }
       localStorage.setItem('isAuth', 'true')
+      window.dispatchEvent(new Event('authChange'))
       
       router.push(ROUTES.PROPERTIES)
     } catch (err) {

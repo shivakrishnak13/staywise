@@ -80,7 +80,7 @@ export default function SignupPage() {
         localStorage.setItem(USER_KEY, JSON.stringify(userDetails.user))
       }
       localStorage.setItem('isAuth', 'true')
-      
+      window.dispatchEvent(new Event('authChange'))
       router.push(ROUTES.PROPERTIES)
     } catch (err) {
       setError((err as Error)?.message || 'Signup failed. Please try again.')
