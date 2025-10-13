@@ -3,15 +3,16 @@ import { API_BASE_URL, TOKEN_KEY } from "./constants";
 async function request(
   path: string,
   opts: RequestInit = {},
-  authRequired = false
+  authRequired = false,
+  authToken?: string
 ) {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(opts.headers as Record<string, string> || {}),
   };
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+  const token = authToken ||
+    (typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null);
   if (token && authRequired) headers["Authorization"] = `Bearer ${token}`;
 
   const res = await fetch(`${API_BASE_URL}${path}`, {
@@ -34,6 +35,7 @@ export const authApi = {
     request("/user/signup", { method: "POST", body: JSON.stringify(body) }),
   login: (body: { email: string; password: string }) =>
     request("/user/auth", { method: "POST", body: JSON.stringify(body) }),
+  getUserDetails: (token: string) => request("/user/details", { method: "GET" }, true),
 };
 
 export const propertiesApi = {
@@ -46,5 +48,6 @@ export const bookingsApi = {
   create: (body: { propertyId: string; startDate: string; endDate: string }) =>
     request("/bookings", { method: "POST", body: JSON.stringify(body) }, true),
   cancel: (bookingId: string) =>
-    request(`/bookings/${bookingId}`, { method: "DELETE" }, true),
+    request(`/bookings/cancel/${bookingId}`, { method: "DELETE" }, true),
+  admin: () => request("/bookings/admin", { method: "GET" }, true),
 };

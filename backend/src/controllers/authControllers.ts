@@ -50,3 +50,17 @@ export const loginUser = async (req: Request, res: Response) => {
         res.status(400).json({error: error.message})
     }
 }
+
+export const getUserDetails = async (req: Request, res: Response) => {
+    const { userId } = (req as any).user;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ user });
+    } catch (error: any) {
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+

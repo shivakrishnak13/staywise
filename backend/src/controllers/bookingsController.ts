@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import BookingsModel from "../models/bookingsModel";
 import PropertiesModel from "../models/PropertiesModel";
+import User from "../models/User";
 
 const getBookings = async (req: Request, res: Response) => {
     const { userId } = (req as any).user;
@@ -63,4 +64,45 @@ const cancelBooking = async (req: Request, res: Response) => {
     }
 }
 
-export { getBookings, createBooking, cancelBooking }
+
+const getAllBookingsForAdmin = async (req: Request, res: Response) => {
+    const { role } = (req as any).user;
+    if (role !== 'admin') {
+        return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+    try {
+        const allBookings = await BookingsModel.find();
+        const bookingsWithDetails = await Promise.all(
+            allBookings.map(async (booking: any) => {
+                const user = await User.findOne({ _id: booking.userId });
+                const property = await PropertiesModel.findOne({ _id: booking.propertyId });
+                return {
+                    ...booking.toObject(),
+                    userDetails: user
+                        ? {
+                            _id: user._id,
+                            name: user.name,
+                            email: user.email
+                        }
+                        : undefined,
+                    propertyDetails: property
+                        ? {
+                            _id: property._id,
+                            title: property.title,
+                            description: property.description,
+                            location: property.location,
+                            price: property.price,
+                            images: property.images,
+                            propertyType: property.propertyType
+                        }
+                        : null
+                };
+            })
+        );
+        res.status(200).json({ bookings: bookingsWithDetails });
+    } catch (error: any) {
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+export { getBookings, createBooking, cancelBooking, getAllBookingsForAdmin };

@@ -10,6 +10,7 @@ export const ROUTES = {
   PROPERTIES: '/properties',
   PROPERTY_DETAILS: (id: string) => `/properties/${id}`,
   BOOKINGS: '/bookings',
+  ADMIN: '/admin',
 } as const;
 
 export const COLORS = {
